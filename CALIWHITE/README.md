@@ -1,8 +1,8 @@
-# 🐺 LELOUP99 - Boutique E-commerce Premium
+# 🎨 CALIWHITE - Boutique E-commerce Premium
 
 ## 🚀 Vue d'ensemble
 
-LELOUP99 est une boutique e-commerce moderne et élégante construite avec Next.js 15, TypeScript, et Tailwind CSS. Elle utilise Cloudflare D1 pour la base de données et Cloudflare R2 pour le stockage des médias.
+CALIWHITE est une boutique e-commerce moderne et élégante construite avec Next.js 15, TypeScript, et Tailwind CSS. Elle utilise Cloudflare D1 pour la base de données et Cloudflare R2 pour le stockage des médias.
 
 ## ✨ Fonctionnalités
 
@@ -25,7 +25,7 @@ LELOUP99 est une boutique e-commerce moderne et élégante construite avec Next.
 ## 🏗️ Architecture Technique
 
 ### Base de Données (Cloudflare D1)
-- **UUID**: `91056561-162d-47a7-9057-5a30c2834227`
+- **UUID**: `19ee81cc-91c0-4cfc-8cbe-dc67d8675e37`
 - **Tables**:
   - `categories` - Catégories de produits
   - `farms` - Producteurs/Farms
@@ -45,7 +45,7 @@ LELOUP99 est une boutique e-commerce moderne et élégante construite avec Next.
 ```env
 # Cloudflare D1
 CLOUDFLARE_ACCOUNT_ID=7979421604bd07b3bd34d3ed96222512
-CLOUDFLARE_DATABASE_ID=91056561-162d-47a7-9057-5a30c2834227
+CLOUDFLARE_DATABASE_ID=19ee81cc-91c0-4cfc-8cbe-dc67d8675e37
 CLOUDFLARE_API_TOKEN=ijkVhaXCw6LSddIMIMxwPL5CDAWznxip5x9I1bNW
 
 # Cloudflare R2
@@ -55,7 +55,7 @@ CLOUDFLARE_R2_BUCKET_NAME=boutique-images
 CLOUDFLARE_R2_PUBLIC_URL=https://pub-b38679a01a274648827751df94818418.r2.dev
 
 # Admin
-ADMIN_PASSWORD=leloup99admin
+ADMIN_PASSWORD=caliwhiteadmin
 ```
 
 ## 🚀 Installation et Déploiement
@@ -68,10 +68,10 @@ npm install
 ### 2. Migration des Données
 ```bash
 # Migration MongoDB → D1
-node migrate-data-clean-leloup99.js
+node migrate-data-clean-caliwhite.js
 
 # Migration médias Cloudinary → R2
-node migrate-media-to-r2-leloup99.js
+node migrate-media-to-r2-caliwhite.js
 ```
 
 ### 3. Développement
@@ -89,7 +89,7 @@ npm start
 
 - **Boutique**: `http://localhost:3000`
 - **Admin Panel**: `http://localhost:3000/admin`
-  - Mot de passe: `leloup99admin`
+  - Mot de passe: `caliwhiteadmin`
 
 ## 🎨 Personnalisation
 
@@ -158,7 +158,7 @@ npm start
 - **Farms**: 1 unique  
 - **Produits**: 1 unique avec média R2
 - **Liens sociaux**: 3 uniques (WhatsApp, Telegram, Instagram)
-- **Base D1**: LELOUP99 (UUID: 91056561-162d-47a7-9057-5a30c2834227)
+- **Base D1**: CALIWHITE (UUID: 19ee81cc-91c0-4cfc-8cbe-dc67d8675e37)
 
 ## 🎯 Fonctionnalités Confirmées
 
@@ -184,4 +184,4 @@ Pour toute question ou problème, contactez l'équipe de développement.
 
 ---
 
-**LELOUP99** - Boutique E-commerce Premium 🐺
+**CALIWHITE** - Boutique E-commerce Premium 🎨
