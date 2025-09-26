@@ -29,7 +29,7 @@ export default function Header() {
           console.log('📝 Header - Settings chargés:', data);
           
           setSettings({
-            shopTitle: data.shop_name || 'LELOUP99',
+            shopTitle: data.shop_name || 'LeLoup99',
             shopSubtitle: '', // Pas de sous-titre
             scrollingText: data.scrolling_text || '',
             bannerText: '', // Pas de bandeau contact dans header
@@ -133,13 +133,13 @@ export default function Header() {
               {settings.backgroundImage ? (
                 <img 
                   src={settings.backgroundImage} 
-                  alt="LELOUP99" 
+                  alt="LeLoup99" 
                   className="h-12 sm:h-16 md:h-20 w-auto rounded-lg"
                   style={{ filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.2))' }}
                 />
               ) : (
                 <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-white">
-                  LELOUP99
+                  LeLoup99
                 </h1>
               )}
 

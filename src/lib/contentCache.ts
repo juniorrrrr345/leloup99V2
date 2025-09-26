@@ -95,7 +95,7 @@ class ContentCache {
 
   getDefaultSettings() {
     return {
-      shopName: 'LELOUP99',
+      shopName: 'LeLoup99',
       shopDescription: 'Boutique en ligne moderne',
       backgroundImage: '',
       backgroundOpacity: 20,
