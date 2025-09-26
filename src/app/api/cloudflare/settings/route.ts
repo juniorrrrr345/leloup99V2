@@ -55,14 +55,13 @@ export async function GET() {
         backgroundImage: settings.background_image,
         backgroundOpacity: settings.background_opacity || 20,
         backgroundBlur: settings.background_blur || 5,
-        shopTitle: 'LeLoup99', // Valeur par défaut car shop_name n'existe pas
-        shopName: 'LeLoup99', // Valeur par défaut car shop_name n'existe pas
-        shopDescription: '', // Pas de colonne correspondante
-        contactInfo: settings.contact_info || '',
-        // Ces champs n'existent pas dans le schéma actuel
-        whatsappLink: '',
-        whatsappNumber: '',
-        scrollingText: '',
+        shopTitle: settings.shop_title || 'LeLoup99',
+        shopName: settings.shop_title || 'LeLoup99',
+        shopDescription: settings.info_content || '',
+        contactInfo: settings.contact_content || settings.whatsapp_link || '',
+        whatsappLink: settings.whatsapp_link || '',
+        whatsappNumber: settings.whatsapp_number || '',
+        scrollingText: settings.scrolling_text || '',
         titleStyle: settings.theme_color || 'glow'
       };
       
@@ -125,6 +124,11 @@ export async function PUT(request: NextRequest) {
     const updateFields = [];
     const updateValues = [];
     
+    if (availableColumns.includes('shop_title')) {
+      updateFields.push('shop_title = ?');
+      updateValues.push(String(body.shop_name || 'LeLoup99'));
+    }
+    
     if (availableColumns.includes('background_image')) {
       updateFields.push('background_image = ?');
       updateValues.push(String(body.background_image || ''));
@@ -140,9 +144,19 @@ export async function PUT(request: NextRequest) {
       updateValues.push(Number(body.background_blur || 5));
     }
     
-    if (availableColumns.includes('contact_info')) {
-      updateFields.push('contact_info = ?');
+    if (availableColumns.includes('contact_content')) {
+      updateFields.push('contact_content = ?');
       updateValues.push(String(body.contact_info || ''));
+    }
+    
+    if (availableColumns.includes('whatsapp_link')) {
+      updateFields.push('whatsapp_link = ?');
+      updateValues.push(String(body.contact_info || ''));
+    }
+    
+    if (availableColumns.includes('scrolling_text')) {
+      updateFields.push('scrolling_text = ?');
+      updateValues.push(String(body.scrolling_text || ''));
     }
     
     if (availableColumns.includes('theme_color')) {
@@ -180,10 +194,13 @@ export async function PUT(request: NextRequest) {
       
       // Ajouter les valeurs dans le même ordre que les colonnes
       insertColumns.slice(1).forEach(col => {
-        if (col === 'background_image') insertValues.push(String(body.background_image || ''));
+        if (col === 'shop_title') insertValues.push(String(body.shop_name || 'LeLoup99'));
+        else if (col === 'background_image') insertValues.push(String(body.background_image || ''));
         else if (col === 'background_opacity') insertValues.push(Number(body.background_opacity || 20));
         else if (col === 'background_blur') insertValues.push(Number(body.background_blur || 5));
-        else if (col === 'contact_info') insertValues.push(String(body.contact_info || ''));
+        else if (col === 'contact_content') insertValues.push(String(body.contact_info || ''));
+        else if (col === 'whatsapp_link') insertValues.push(String(body.contact_info || ''));
+        else if (col === 'scrolling_text') insertValues.push(String(body.scrolling_text || ''));
         else if (col === 'theme_color') insertValues.push(String(body.theme_color || 'glow'));
       });
       
@@ -213,13 +230,13 @@ export async function PUT(request: NextRequest) {
       backgroundImage: settings.background_image || '',
       backgroundOpacity: settings.background_opacity || 20,
       backgroundBlur: settings.background_blur || 5,
-      shopTitle: 'LeLoup99',
-      shopName: 'LeLoup99',
-      shopDescription: '',
-      contactInfo: settings.contact_info || '',
-      whatsappLink: '',
-      whatsappNumber: '',
-      scrollingText: '',
+      shopTitle: settings.shop_title || 'LeLoup99',
+      shopName: settings.shop_title || 'LeLoup99',
+      shopDescription: settings.info_content || '',
+      contactInfo: settings.contact_content || settings.whatsapp_link || '',
+      whatsappLink: settings.whatsapp_link || '',
+      whatsappNumber: settings.whatsapp_number || '',
+      scrollingText: settings.scrolling_text || '',
       titleStyle: settings.theme_color || 'glow'
     };
 
