@@ -10,6 +10,11 @@ const CLOUDFLARE_CONFIG = {
 async function executeSqlOnD1(sql: string, params: any[] = []) {
   const url = `https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_CONFIG.accountId}/d1/database/${CLOUDFLARE_CONFIG.databaseId}/query`;
   
+  console.log('🔗 URL D1:', url);
+  console.log('🔑 API Token (premiers 10 chars):', CLOUDFLARE_CONFIG.apiToken.substring(0, 10) + '...');
+  console.log('📝 SQL:', sql);
+  console.log('📊 Params:', params);
+  
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -19,11 +24,18 @@ async function executeSqlOnD1(sql: string, params: any[] = []) {
     body: JSON.stringify({ sql, params })
   });
   
+  console.log('📡 Response status:', response.status);
+  console.log('📡 Response headers:', Object.fromEntries(response.headers.entries()));
+  
   if (!response.ok) {
-    throw new Error(`D1 Error: ${response.status} ${response.statusText}`);
+    const errorText = await response.text();
+    console.error('❌ D1 Error response:', errorText);
+    throw new Error(`D1 Error: ${response.status} ${response.statusText} - ${errorText}`);
   }
   
-  return await response.json();
+  const result = await response.json();
+  console.log('✅ D1 Response:', JSON.stringify(result, null, 2));
+  return result;
 }
 
 // GET - Récupérer les paramètres
