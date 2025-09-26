@@ -122,54 +122,32 @@ export async function PUT(request: NextRequest) {
     const finalContactInfo = contact_info || contactInfo || '';
     const finalThemeColor = theme_color || titleStyle || 'glow';
 
+    console.log('🔍 Vérification structure table...');
+    const tableInfo = await executeSqlOnD1("PRAGMA table_info(settings)");
+    console.log('📊 Structure table:', JSON.stringify(tableInfo, null, 2));
+    
     console.log('🔍 Vérification existence enregistrement...');
     const checkResult = await executeSqlOnD1('SELECT id FROM settings WHERE id = 1');
     console.log('📊 Résultat check:', JSON.stringify(checkResult, null, 2));
     
-    if (checkResult.result?.[0]?.results?.length) {
-      console.log('📝 Mise à jour enregistrement existant...');
-      // UPDATE - Utiliser seulement les colonnes qui existent dans le schéma
-      const updateResult = await executeSqlOnD1(`
-        UPDATE settings SET 
-          background_image = ?, 
-          background_opacity = ?, 
-          background_blur = ?,
-          shop_name = ?,
-          shop_description = ?,
-          contact_info = ?,
-          theme_color = ?,
-          updated_at = CURRENT_TIMESTAMP
-        WHERE id = 1
-      `, [
-        finalBackgroundImage,
-        finalBackgroundOpacity,
-        finalBackgroundBlur,
-        finalShopName,
-        finalShopDescription,
-        finalContactInfo,
-        finalThemeColor
-      ]);
-      console.log('✅ Update result:', JSON.stringify(updateResult, null, 2));
-    } else {
-      console.log('📝 Création nouvel enregistrement...');
-      // INSERT - Utiliser seulement les colonnes qui existent dans le schéma
-      const insertResult = await executeSqlOnD1(`
-        INSERT INTO settings (
-          id, background_image, background_opacity, background_blur, 
-          shop_name, shop_description, contact_info, theme_color
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `, [
-        1,
-        finalBackgroundImage,
-        finalBackgroundOpacity,
-        finalBackgroundBlur,
-        finalShopName,
-        finalShopDescription,
-        finalContactInfo,
-        finalThemeColor
-      ]);
-      console.log('✅ Insert result:', JSON.stringify(insertResult, null, 2));
-    }
+    // Utiliser INSERT OR REPLACE pour éviter les problèmes d'UPDATE
+    console.log('📝 Utilisation INSERT OR REPLACE...');
+    const insertResult = await executeSqlOnD1(`
+      INSERT OR REPLACE INTO settings (
+        id, background_image, background_opacity, background_blur, 
+        shop_name, shop_description, contact_info, theme_color
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+      1,
+      finalBackgroundImage,
+      finalBackgroundOpacity,
+      finalBackgroundBlur,
+      finalShopName,
+      finalShopDescription,
+      finalContactInfo,
+      finalThemeColor
+    ]);
+    console.log('✅ Insert/Replace result:', JSON.stringify(insertResult, null, 2));
 
     // Récupérer les paramètres mis à jour
     console.log('🔍 Récupération des paramètres mis à jour...');
