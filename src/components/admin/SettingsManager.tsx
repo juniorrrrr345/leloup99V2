@@ -76,18 +76,25 @@ export default function SettingsManager() {
       setMessage(''); // Effacer les anciens messages
       console.log('🔄 Tentative de sauvegarde avec:', settings);
       
-      // Mapper les champs camelCase vers snake_case pour l'API
+      // Mapper seulement les champs qui existent dans la base de données
       const apiData = {
-        shop_name: settings.shopTitle,
-        background_image: settings.backgroundImage,
-        background_opacity: settings.backgroundOpacity,
-        background_blur: settings.backgroundBlur,
-        shop_description: '', // Pas utilisé dans l'interface actuelle
-        contact_info: settings.whatsappLink,
-        theme_color: settings.titleStyle
+        shop_name: settings.shopTitle || 'LeLoup99',
+        background_image: settings.backgroundImage || '',
+        background_opacity: settings.backgroundOpacity || 20,
+        background_blur: settings.backgroundBlur || 5,
+        contact_info: settings.whatsappLink || '',
+        theme_color: settings.titleStyle || 'glow'
       };
       
       console.log('📤 Données envoyées à l\'API:', apiData);
+      console.log('📤 Types des données:', {
+        shop_name: typeof apiData.shop_name,
+        background_image: typeof apiData.background_image,
+        background_opacity: typeof apiData.background_opacity,
+        background_blur: typeof apiData.background_blur,
+        contact_info: typeof apiData.contact_info,
+        theme_color: typeof apiData.theme_color
+      });
       
       const response = await fetch('/api/cloudflare/settings', {
         method: 'PUT',
