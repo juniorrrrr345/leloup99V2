@@ -29,13 +29,13 @@ async function executeSqlOnD1(sql: string, params: any[] = []) {
 // GET - Récupérer les paramètres
 export async function GET() {
   try {
-    console.log('🔍 GET settings GOTHAM...');
+    console.log('🔍 GET settings LELOUP99...');
     
     const result = await executeSqlOnD1('SELECT * FROM settings WHERE id = 1');
     
     if (result.result?.[0]?.results?.length) {
       const settings = result.result[0].results[0];
-      console.log('✅ Settings GOTHAM récupérés:', settings);
+      console.log('✅ Settings LELOUP99 récupérés:', settings);
       
       // Mapper les champs D1 vers le format attendu par le frontend
       const mappedSettings = {
@@ -43,8 +43,8 @@ export async function GET() {
         backgroundImage: settings.background_image,
         backgroundOpacity: settings.background_opacity || 20,
         backgroundBlur: settings.background_blur || 5,
-        shopTitle: settings.shop_name || 'GOTHAM',
-        shopName: settings.shop_name || 'GOTHAM',
+        shopTitle: settings.shop_name || 'LELOUP99',
+        shopName: settings.shop_name || 'LELOUP99',
         shopDescription: settings.shop_description || '',
         contactInfo: settings.contact_info || '',
         whatsappLink: settings.whatsapp_link || '',
@@ -55,26 +55,26 @@ export async function GET() {
       
       return NextResponse.json(mappedSettings);
     } else {
-      // Retourner des paramètres par défaut GOTHAM
+      // Retourner des paramètres par défaut LELOUP99
       const defaultSettings = {
         id: 1,
-        shop_name: 'GOTHAM',
+        shop_name: 'LELOUP99',
         background_image: 'https://pub-b38679a01a274648827751df94818418.r2.dev/images/background-oglegacy.jpeg',
         background_opacity: 20,
         background_blur: 5,
-        info_content: 'Bienvenue chez GOTHAM - Votre boutique premium',
-        contact_content: 'Contactez GOTHAM pour toute question',
+        info_content: 'Bienvenue chez LELOUP99 - Votre boutique premium',
+        contact_content: 'Contactez LELOUP99 pour toute question',
         backgroundImage: 'https://pub-b38679a01a274648827751df94818418.r2.dev/images/background-oglegacy.jpeg',
         backgroundOpacity: 20,
         backgroundBlur: 5,
-        shopTitle: 'GOTHAM',
-        shopName: 'GOTHAM'
+        shopTitle: 'LELOUP99',
+        shopName: 'LELOUP99'
       };
       
       return NextResponse.json(defaultSettings);
     }
   } catch (error) {
-    console.error('❌ Erreur GET settings GOTHAM:', error);
+    console.error('❌ Erreur GET settings LELOUP99:', error);
     return NextResponse.json(
       { error: 'Erreur serveur lors de la récupération des paramètres' },
       { status: 500 }
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
 // PUT - Mettre à jour les paramètres
 export async function PUT(request: NextRequest) {
   try {
-    console.log('🔧 PUT settings GOTHAM...');
+    console.log('🔧 PUT settings LELOUP99...');
     const body = await request.json();
     
     const {
@@ -120,9 +120,9 @@ export async function PUT(request: NextRequest) {
     const finalBackgroundImage = background_image || backgroundImage;
     const finalBackgroundOpacity = background_opacity ?? backgroundOpacity ?? 20;
     const finalBackgroundBlur = background_blur ?? backgroundBlur ?? 5;
-    const finalShopName = shop_name || shopName || 'GOTHAM';
-    const finalShopDescription = shop_description || shopDescription || 'Bienvenue chez GOTHAM';
-    const finalContactInfo = contact_info || contactInfo || 'Contactez GOTHAM';
+    const finalShopName = shop_name || shopName || 'LELOUP99';
+    const finalShopDescription = shop_description || shopDescription || 'Bienvenue chez LELOUP99';
+    const finalContactInfo = contact_info || contactInfo || 'Contactez LELOUP99';
     const finalWhatsappLink = whatsapp_link || whatsappLink || '';
     const finalWhatsappNumber = whatsapp_number || whatsappNumber || '';
     const finalScrollingText = scrolling_text || scrollingText || '';
@@ -186,15 +186,15 @@ export async function PUT(request: NextRequest) {
     const result = await executeSqlOnD1('SELECT * FROM settings WHERE id = 1');
     const settings = result.result[0].results[0];
     
-    console.log('✅ Settings GOTHAM mis à jour:', settings);
+    console.log('✅ Settings LELOUP99 mis à jour:', settings);
 
     const mappedSettings = {
       ...settings,
       backgroundImage: settings.background_image,
       backgroundOpacity: settings.background_opacity,
       backgroundBlur: settings.background_blur,
-      shopTitle: settings.shop_name || 'GOTHAM',
-      shopName: settings.shop_name || 'GOTHAM',
+      shopTitle: settings.shop_name || 'LELOUP99',
+      shopName: settings.shop_name || 'LELOUP99',
       shopDescription: settings.shop_description || '',
       contactInfo: settings.contact_info || '',
       whatsappLink: settings.whatsapp_link || '',
@@ -205,7 +205,7 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json(mappedSettings);
   } catch (error) {
-    console.error('❌ Erreur PUT settings GOTHAM:', error);
+    console.error('❌ Erreur PUT settings LELOUP99:', error);
     return NextResponse.json(
       { error: 'Erreur serveur lors de la mise à jour des paramètres' },
       { status: 500 }

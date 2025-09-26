@@ -15,7 +15,7 @@ export default function TestLoading() {
           console.log('📝 Loading - Settings chargés:', data);
           setSettings({
             backgroundImage: data.background_image || '',
-            shop_name: data.shop_name || 'GOTHAM'
+            shop_name: data.shop_name || 'LELOUP99'
           });
         }
       } catch (error) {
@@ -23,7 +23,7 @@ export default function TestLoading() {
         // Fallback si erreur
         setSettings({
           backgroundImage: '',
-          shop_name: 'GOTHAM'
+          shop_name: 'LELOUP99'
         });
       }
     };
@@ -53,13 +53,13 @@ export default function TestLoading() {
                   {settings.backgroundImage ? (
                     <img 
                       src={settings.backgroundImage} 
-                      alt="GOTHAM" 
+                      alt="LELOUP99" 
                       className="w-32 h-32 object-contain rounded-lg animate-pulse"
                       style={{ filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.3))' }}
                     />
                   ) : (
                     <h1 className="text-6xl font-black text-white animate-pulse">
-                      GOTHAM
+                      LELOUP99
                     </h1>
                   )}
                 </div>
@@ -84,7 +84,7 @@ export default function TestLoading() {
             </div>
             
             <div className="text-white/30 text-sm">
-              <p>© 2025 GOTHAM</p>
+              <p>© 2025 LELOUP99</p>
             </div>
           </div>
         </div>

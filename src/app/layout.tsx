@@ -9,12 +9,12 @@ import { Toaster } from 'react-hot-toast'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'GOTHAM - Boutique en ligne',
-  description: 'GOTHAM - Votre boutique en ligne. Produits de qualité et livraison rapide.',
+  title: 'LELOUP99 - Boutique en ligne',
+  description: 'LELOUP99 - Votre boutique en ligne. Produits de qualité et livraison rapide.',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'GOTHAM'
+    title: 'LELOUP99'
   },
   formatDetection: {
     telephone: false

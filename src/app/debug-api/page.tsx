@@ -60,7 +60,7 @@ export default function DebugAPI() {
 
   return (
     <div className="p-8">
-      <h1 className="text-2xl font-bold mb-4">Debug API GOTHAM</h1>
+      <h1 className="text-2xl font-bold mb-4">Debug API LELOUP99</h1>
       
       <div className="space-y-4">
         <button 

@@ -45,16 +45,16 @@ export async function GET(
       
       switch (params.slug) {
         case 'info':
-          defaultTitle = 'À propos d\'GOTHAM';
-          defaultContent = 'Bienvenue chez GOTHAM - Votre boutique premium de produits d\'exception.';
+          defaultTitle = 'À propos d\'LELOUP99';
+          defaultContent = 'Bienvenue chez LELOUP99 - Votre boutique premium de produits d\'exception.';
           break;
         case 'contact':
-          defaultTitle = 'Contact GOTHAM';
-          defaultContent = 'Contactez-nous pour toute question concernant nos produits GOTHAM.';
+          defaultTitle = 'Contact LELOUP99';
+          defaultContent = 'Contactez-nous pour toute question concernant nos produits LELOUP99.';
           break;
         default:
-          defaultTitle = 'Page GOTHAM';
-          defaultContent = 'Contenu de la page GOTHAM.';
+          defaultTitle = 'Page LELOUP99';
+          defaultContent = 'Contenu de la page LELOUP99.';
       }
       
       const defaultPage = {
