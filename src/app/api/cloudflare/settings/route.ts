@@ -47,9 +47,10 @@ export async function GET() {
         shopName: settings.shop_name || 'LeLoup99',
         shopDescription: settings.shop_description || '',
         contactInfo: settings.contact_info || '',
-        whatsappLink: settings.whatsapp_link || '',
-        whatsappNumber: settings.whatsapp_number || '',
-        scrollingText: settings.scrolling_text || '',
+        // Ces champs n'existent pas dans le schéma actuel
+        whatsappLink: '',
+        whatsappNumber: '',
+        scrollingText: '',
         titleStyle: settings.theme_color || 'glow'
       };
       
@@ -132,7 +133,7 @@ export async function PUT(request: NextRequest) {
     const checkResult = await executeSqlOnD1('SELECT id FROM settings WHERE id = 1');
     
     if (checkResult.result?.[0]?.results?.length) {
-      // UPDATE
+      // UPDATE - Utiliser seulement les colonnes qui existent dans le schéma
       await executeSqlOnD1(`
         UPDATE settings SET 
           background_image = ?, 
@@ -141,9 +142,6 @@ export async function PUT(request: NextRequest) {
           shop_name = ?,
           shop_description = ?,
           contact_info = ?,
-          whatsapp_link = ?,
-          whatsapp_number = ?,
-          scrolling_text = ?,
           theme_color = ?,
           updated_at = CURRENT_TIMESTAMP
         WHERE id = 1
@@ -154,19 +152,15 @@ export async function PUT(request: NextRequest) {
         finalShopName,
         finalShopDescription,
         finalContactInfo,
-        finalWhatsappLink,
-        finalWhatsappNumber,
-        finalScrollingText,
         finalThemeColor
       ]);
     } else {
-      // INSERT
+      // INSERT - Utiliser seulement les colonnes qui existent dans le schéma
       await executeSqlOnD1(`
         INSERT INTO settings (
           id, background_image, background_opacity, background_blur, 
-          shop_name, shop_description, contact_info, whatsapp_link,
-          whatsapp_number, scrolling_text, theme_color
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+          shop_name, shop_description, contact_info, theme_color
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
       `, [
         1,
         finalBackgroundImage,
@@ -175,9 +169,6 @@ export async function PUT(request: NextRequest) {
         finalShopName,
         finalShopDescription,
         finalContactInfo,
-        finalWhatsappLink,
-        finalWhatsappNumber,
-        finalScrollingText,
         finalThemeColor
       ]);
     }
@@ -197,9 +188,10 @@ export async function PUT(request: NextRequest) {
       shopName: settings.shop_name || 'LeLoup99',
       shopDescription: settings.shop_description || '',
       contactInfo: settings.contact_info || '',
-      whatsappLink: settings.whatsapp_link || '',
-      whatsappNumber: settings.whatsapp_number || '',
-      scrollingText: settings.scrolling_text || '',
+      // Ces champs n'existent pas dans le schéma actuel, donc on les met en dur
+      whatsappLink: '',
+      whatsappNumber: '',
+      scrollingText: '',
       titleStyle: settings.theme_color || 'glow'
     };
 
