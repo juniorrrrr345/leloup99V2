@@ -76,12 +76,25 @@ export default function SettingsManager() {
       setMessage(''); // Effacer les anciens messages
       console.log('🔄 Tentative de sauvegarde avec:', settings);
       
+      // Mapper les champs camelCase vers snake_case pour l'API
+      const apiData = {
+        shop_name: settings.shopTitle,
+        background_image: settings.backgroundImage,
+        background_opacity: settings.backgroundOpacity,
+        background_blur: settings.backgroundBlur,
+        shop_description: '', // Pas utilisé dans l'interface actuelle
+        contact_info: settings.whatsappLink,
+        theme_color: settings.titleStyle
+      };
+      
+      console.log('📤 Données envoyées à l\'API:', apiData);
+      
       const response = await fetch('/api/cloudflare/settings', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(settings),
+        body: JSON.stringify(apiData),
       });
 
       console.log('📡 Réponse API:', response.status, response.statusText);
