@@ -248,12 +248,12 @@ export default function HomePage() {
             <div className="text-center bg-black/60 backdrop-blur-md rounded-3xl p-8 sm:p-12 max-w-lg mx-auto border border-white/20">
 
               
-              {/* Logo carré = image de fond de la boutique */}
+              {/* Logo rond = image de fond de la boutique */}
               <div className="mb-8">
                 <img 
                   src={settings?.backgroundImage || "https://pub-b38679a01a274648827751df94818418.r2.dev/images/background-oglegacy.jpeg"}
                   alt="LeLoup99" 
-                  className="h-32 sm:h-40 md:h-48 w-32 sm:w-40 md:w-48 mx-auto rounded-xl object-cover border-4 border-white/20"
+                  className="h-32 sm:h-40 md:h-48 w-32 sm:w-40 md:w-48 mx-auto rounded-full object-cover border-4 border-white/20"
                   style={{ filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.3))' }}
                 />
               </div>

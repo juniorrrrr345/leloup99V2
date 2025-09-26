@@ -54,7 +54,7 @@ export default function TestLoading() {
                     <img 
                       src={settings.backgroundImage} 
                       alt="LeLoup99" 
-                      className="w-32 h-32 object-contain rounded-lg animate-pulse"
+                      className="w-32 h-32 object-contain rounded-full animate-pulse"
                       style={{ filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.3))' }}
                     />
                   ) : (
