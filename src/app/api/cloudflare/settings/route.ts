@@ -93,7 +93,9 @@ export async function PUT(request: NextRequest) {
   try {
     console.log('🔧 PUT settings LeLoup99...');
     const body = await request.json();
+    console.log('📝 Body reçu:', JSON.stringify(body, null, 2));
     
+    // Extraire seulement les champs qui existent dans le schéma
     const {
       background_image,
       backgroundImage,
@@ -107,34 +109,27 @@ export async function PUT(request: NextRequest) {
       shopDescription,
       contact_info,
       contactInfo,
-      whatsapp_link,
-      whatsappLink,
-      whatsapp_number,
-      whatsappNumber,
-      scrolling_text,
-      scrollingText,
       theme_color,
       titleStyle
     } = body;
 
     // Utiliser les champs avec priorité aux versions snake_case
-    const finalBackgroundImage = background_image || backgroundImage;
+    const finalBackgroundImage = background_image || backgroundImage || '';
     const finalBackgroundOpacity = background_opacity ?? backgroundOpacity ?? 20;
     const finalBackgroundBlur = background_blur ?? backgroundBlur ?? 5;
     const finalShopName = shop_name || shopName || 'LeLoup99';
-    const finalShopDescription = shop_description || shopDescription || 'Bienvenue chez LeLoup99';
-    const finalContactInfo = contact_info || contactInfo || 'Contactez LeLoup99';
-    const finalWhatsappLink = whatsapp_link || whatsappLink || '';
-    const finalWhatsappNumber = whatsapp_number || whatsappNumber || '';
-    const finalScrollingText = scrolling_text || scrollingText || '';
+    const finalShopDescription = shop_description || shopDescription || '';
+    const finalContactInfo = contact_info || contactInfo || '';
     const finalThemeColor = theme_color || titleStyle || 'glow';
 
-    // Vérifier si un enregistrement existe
+    console.log('🔍 Vérification existence enregistrement...');
     const checkResult = await executeSqlOnD1('SELECT id FROM settings WHERE id = 1');
+    console.log('📊 Résultat check:', JSON.stringify(checkResult, null, 2));
     
     if (checkResult.result?.[0]?.results?.length) {
+      console.log('📝 Mise à jour enregistrement existant...');
       // UPDATE - Utiliser seulement les colonnes qui existent dans le schéma
-      await executeSqlOnD1(`
+      const updateResult = await executeSqlOnD1(`
         UPDATE settings SET 
           background_image = ?, 
           background_opacity = ?, 
@@ -154,9 +149,11 @@ export async function PUT(request: NextRequest) {
         finalContactInfo,
         finalThemeColor
       ]);
+      console.log('✅ Update result:', JSON.stringify(updateResult, null, 2));
     } else {
+      console.log('📝 Création nouvel enregistrement...');
       // INSERT - Utiliser seulement les colonnes qui existent dans le schéma
-      await executeSqlOnD1(`
+      const insertResult = await executeSqlOnD1(`
         INSERT INTO settings (
           id, background_image, background_opacity, background_blur, 
           shop_name, shop_description, contact_info, theme_color
@@ -171,12 +168,19 @@ export async function PUT(request: NextRequest) {
         finalContactInfo,
         finalThemeColor
       ]);
+      console.log('✅ Insert result:', JSON.stringify(insertResult, null, 2));
     }
 
     // Récupérer les paramètres mis à jour
+    console.log('🔍 Récupération des paramètres mis à jour...');
     const result = await executeSqlOnD1('SELECT * FROM settings WHERE id = 1');
-    const settings = result.result[0].results[0];
+    console.log('📊 Résultat récupération:', JSON.stringify(result, null, 2));
     
+    if (!result.result?.[0]?.results?.length) {
+      throw new Error('Aucun paramètre trouvé après mise à jour');
+    }
+    
+    const settings = result.result[0].results[0];
     console.log('✅ Settings LeLoup99 mis à jour:', settings);
 
     const mappedSettings = {
@@ -195,11 +199,17 @@ export async function PUT(request: NextRequest) {
       titleStyle: settings.theme_color || 'glow'
     };
 
+    console.log('🎯 Settings mappés:', JSON.stringify(mappedSettings, null, 2));
     return NextResponse.json(mappedSettings);
   } catch (error) {
     console.error('❌ Erreur PUT settings LeLoup99:', error);
+    console.error('❌ Stack trace:', error.stack);
     return NextResponse.json(
-      { error: 'Erreur serveur lors de la mise à jour des paramètres' },
+      { 
+        error: 'Erreur serveur lors de la mise à jour des paramètres',
+        details: error.message,
+        type: error.constructor.name
+      },
       { status: 500 }
     );
   }
