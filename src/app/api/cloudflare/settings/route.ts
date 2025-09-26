@@ -95,59 +95,83 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     console.log('📝 Body reçu:', JSON.stringify(body, null, 2));
     
-    // Extraire seulement les champs qui existent dans le schéma
+    // Test de connexion D1 d'abord
+    console.log('🔍 Test de connexion D1...');
+    try {
+      const testResult = await executeSqlOnD1('SELECT 1 as test');
+      console.log('✅ Connexion D1 OK:', JSON.stringify(testResult, null, 2));
+    } catch (testError) {
+      console.error('❌ Erreur connexion D1:', testError);
+      throw new Error(`Connexion D1 échouée: ${testError.message}`);
+    }
+    
+    // Vérifier la structure de la table
+    console.log('🔍 Vérification structure table...');
+    try {
+      const tableInfo = await executeSqlOnD1("PRAGMA table_info(settings)");
+      console.log('📊 Structure table:', JSON.stringify(tableInfo, null, 2));
+    } catch (tableError) {
+      console.error('❌ Erreur structure table:', tableError);
+      throw new Error(`Erreur structure table: ${tableError.message}`);
+    }
+    
+    // Extraire seulement les champs de base
     const {
-      background_image,
-      backgroundImage,
-      background_opacity,
-      backgroundOpacity,
-      background_blur,
-      backgroundBlur,
       shop_name,
-      shopName,
-      shop_description,
-      shopDescription,
+      background_image,
+      background_opacity,
+      background_blur,
       contact_info,
-      contactInfo,
-      theme_color,
-      titleStyle
+      theme_color
     } = body;
 
-    // Utiliser les champs avec priorité aux versions snake_case
-    const finalBackgroundImage = background_image || backgroundImage || '';
-    const finalBackgroundOpacity = background_opacity ?? backgroundOpacity ?? 20;
-    const finalBackgroundBlur = background_blur ?? backgroundBlur ?? 5;
-    const finalShopName = shop_name || shopName || 'LeLoup99';
-    const finalShopDescription = shop_description || shopDescription || '';
-    const finalContactInfo = contact_info || contactInfo || '';
-    const finalThemeColor = theme_color || titleStyle || 'glow';
+    // Valeurs par défaut sécurisées
+    const finalShopName = shop_name || 'LeLoup99';
+    const finalBackgroundImage = background_image || '';
+    const finalBackgroundOpacity = background_opacity || 20;
+    const finalBackgroundBlur = background_blur || 5;
+    const finalContactInfo = contact_info || '';
+    const finalThemeColor = theme_color || 'glow';
 
-    console.log('🔍 Vérification structure table...');
-    const tableInfo = await executeSqlOnD1("PRAGMA table_info(settings)");
-    console.log('📊 Structure table:', JSON.stringify(tableInfo, null, 2));
-    
-    console.log('🔍 Vérification existence enregistrement...');
-    const checkResult = await executeSqlOnD1('SELECT id FROM settings WHERE id = 1');
-    console.log('📊 Résultat check:', JSON.stringify(checkResult, null, 2));
-    
-    // Utiliser INSERT OR REPLACE pour éviter les problèmes d'UPDATE
-    console.log('📝 Utilisation INSERT OR REPLACE...');
-    const insertResult = await executeSqlOnD1(`
-      INSERT OR REPLACE INTO settings (
-        id, background_image, background_opacity, background_blur, 
-        shop_name, shop_description, contact_info, theme_color
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `, [
-      1,
+    console.log('📝 Valeurs finales:', {
+      finalShopName,
       finalBackgroundImage,
       finalBackgroundOpacity,
       finalBackgroundBlur,
+      finalContactInfo,
+      finalThemeColor
+    });
+    
+    // Test avec une requête simple d'abord
+    console.log('🔍 Test requête simple...');
+    try {
+      const simpleTest = await executeSqlOnD1('SELECT COUNT(*) as count FROM settings');
+      console.log('✅ Test simple OK:', JSON.stringify(simpleTest, null, 2));
+    } catch (simpleError) {
+      console.error('❌ Erreur test simple:', simpleError);
+      throw new Error(`Test simple échoué: ${simpleError.message}`);
+    }
+    
+    // Utiliser une requête UPDATE simple
+    console.log('📝 Tentative UPDATE simple...');
+    const updateResult = await executeSqlOnD1(`
+      UPDATE settings SET 
+        shop_name = ?,
+        background_image = ?,
+        background_opacity = ?,
+        background_blur = ?,
+        contact_info = ?,
+        theme_color = ?
+      WHERE id = 1
+    `, [
       finalShopName,
-      finalShopDescription,
+      finalBackgroundImage,
+      finalBackgroundOpacity,
+      finalBackgroundBlur,
       finalContactInfo,
       finalThemeColor
     ]);
-    console.log('✅ Insert/Replace result:', JSON.stringify(insertResult, null, 2));
+    console.log('✅ Update result:', JSON.stringify(updateResult, null, 2));
 
     // Récupérer les paramètres mis à jour
     console.log('🔍 Récupération des paramètres mis à jour...');
@@ -170,7 +194,6 @@ export async function PUT(request: NextRequest) {
       shopName: settings.shop_name || 'LeLoup99',
       shopDescription: settings.shop_description || '',
       contactInfo: settings.contact_info || '',
-      // Ces champs n'existent pas dans le schéma actuel, donc on les met en dur
       whatsappLink: '',
       whatsappNumber: '',
       scrollingText: '',
