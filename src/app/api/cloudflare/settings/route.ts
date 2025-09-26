@@ -107,32 +107,55 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     console.log('📝 Body reçu:', JSON.stringify(body, null, 2));
     
-    // Extraire seulement les champs essentiels avec validation
-    const shop_name = String(body.shop_name || 'LeLoup99');
-    const background_image = String(body.background_image || '');
-    const background_opacity = Number(body.background_opacity || 20);
-    const background_blur = Number(body.background_blur || 5);
-    const contact_info = String(body.contact_info || '');
-    const theme_color = String(body.theme_color || 'glow');
-
-    console.log('📝 Valeurs validées:', {
-      shop_name,
-      background_image,
-      background_opacity,
-      background_blur,
-      contact_info,
-      theme_color
-    });
-    
     // Test de connexion D1 simple
     console.log('🔍 Test de connexion D1...');
     const testResult = await executeSqlOnD1('SELECT 1 as test');
     console.log('✅ Connexion D1 OK:', JSON.stringify(testResult, null, 2));
     
-    // D'abord, vérifier la structure de la table
+    // Vérifier la structure de la table
     console.log('🔍 Vérification structure table...');
     const tableInfo = await executeSqlOnD1("PRAGMA table_info(settings)");
     console.log('📊 Structure table:', JSON.stringify(tableInfo, null, 2));
+    
+    // Extraire les colonnes disponibles
+    const availableColumns = tableInfo.result?.[0]?.results?.map((col: any) => col.name) || [];
+    console.log('📋 Colonnes disponibles:', availableColumns);
+    
+    // Construire dynamiquement la requête UPDATE basée sur les colonnes disponibles
+    const updateFields = [];
+    const updateValues = [];
+    
+    if (availableColumns.includes('background_image')) {
+      updateFields.push('background_image = ?');
+      updateValues.push(String(body.background_image || ''));
+    }
+    
+    if (availableColumns.includes('background_opacity')) {
+      updateFields.push('background_opacity = ?');
+      updateValues.push(Number(body.background_opacity || 20));
+    }
+    
+    if (availableColumns.includes('background_blur')) {
+      updateFields.push('background_blur = ?');
+      updateValues.push(Number(body.background_blur || 5));
+    }
+    
+    if (availableColumns.includes('contact_info')) {
+      updateFields.push('contact_info = ?');
+      updateValues.push(String(body.contact_info || ''));
+    }
+    
+    if (availableColumns.includes('theme_color')) {
+      updateFields.push('theme_color = ?');
+      updateValues.push(String(body.theme_color || 'glow'));
+    }
+    
+    console.log('🔧 Champs à mettre à jour:', updateFields);
+    console.log('📊 Valeurs:', updateValues);
+    
+    if (updateFields.length === 0) {
+      throw new Error('Aucune colonne compatible trouvée dans la table');
+    }
     
     // Vérifier si l'enregistrement existe
     console.log('🔍 Vérification existence enregistrement...');
@@ -140,40 +163,35 @@ export async function PUT(request: NextRequest) {
     console.log('📊 Résultat check:', JSON.stringify(checkResult, null, 2));
     
     if (checkResult.result?.[0]?.results?.length) {
-      // UPDATE - Utiliser seulement les colonnes qui existent
+      // UPDATE
       console.log('📝 Mise à jour enregistrement existant...');
-      const updateResult = await executeSqlOnD1(`
-        UPDATE settings SET 
-          background_image = ?,
-          background_opacity = ?,
-          background_blur = ?,
-          contact_info = ?,
-          theme_color = ?
-        WHERE id = 1
-      `, [
-        background_image,
-        background_opacity,
-        background_blur,
-        contact_info,
-        theme_color
-      ]);
+      const updateQuery = `UPDATE settings SET ${updateFields.join(', ')} WHERE id = 1`;
+      console.log('📝 Query UPDATE:', updateQuery);
+      
+      const updateResult = await executeSqlOnD1(updateQuery, updateValues);
       console.log('✅ Update result:', JSON.stringify(updateResult, null, 2));
     } else {
-      // INSERT - Utiliser seulement les colonnes qui existent
+      // INSERT - Créer avec les colonnes disponibles
       console.log('📝 Création nouvel enregistrement...');
-      const insertResult = await executeSqlOnD1(`
-        INSERT INTO settings (
-          id, background_image, background_opacity, 
-          background_blur, contact_info, theme_color
-        ) VALUES (?, ?, ?, ?, ?, ?)
-      `, [
-        1,
-        background_image,
-        background_opacity,
-        background_blur,
-        contact_info,
-        theme_color
-      ]);
+      const insertColumns = ['id', ...availableColumns.filter(col => 
+        ['background_image', 'background_opacity', 'background_blur', 'contact_info', 'theme_color'].includes(col)
+      )];
+      const insertValues = [1];
+      
+      // Ajouter les valeurs dans le même ordre que les colonnes
+      insertColumns.slice(1).forEach(col => {
+        if (col === 'background_image') insertValues.push(String(body.background_image || ''));
+        else if (col === 'background_opacity') insertValues.push(Number(body.background_opacity || 20));
+        else if (col === 'background_blur') insertValues.push(Number(body.background_blur || 5));
+        else if (col === 'contact_info') insertValues.push(String(body.contact_info || ''));
+        else if (col === 'theme_color') insertValues.push(String(body.theme_color || 'glow'));
+      });
+      
+      const insertQuery = `INSERT INTO settings (${insertColumns.join(', ')}) VALUES (${insertColumns.map(() => '?').join(', ')})`;
+      console.log('📝 Query INSERT:', insertQuery);
+      console.log('📊 Valeurs INSERT:', insertValues);
+      
+      const insertResult = await executeSqlOnD1(insertQuery, insertValues);
       console.log('✅ Insert result:', JSON.stringify(insertResult, null, 2));
     }
 
@@ -189,14 +207,15 @@ export async function PUT(request: NextRequest) {
     const settings = result.result[0].results[0];
     console.log('✅ Settings LeLoup99 mis à jour:', settings);
 
+    // Mapping adaptatif basé sur les colonnes disponibles
     const mappedSettings = {
       ...settings,
-      backgroundImage: settings.background_image,
-      backgroundOpacity: settings.background_opacity,
-      backgroundBlur: settings.background_blur,
-      shopTitle: 'LeLoup99', // Valeur par défaut car shop_name n'existe pas
-      shopName: 'LeLoup99', // Valeur par défaut car shop_name n'existe pas
-      shopDescription: '', // Pas de colonne correspondante
+      backgroundImage: settings.background_image || '',
+      backgroundOpacity: settings.background_opacity || 20,
+      backgroundBlur: settings.background_blur || 5,
+      shopTitle: 'LeLoup99',
+      shopName: 'LeLoup99',
+      shopDescription: '',
       contactInfo: settings.contact_info || '',
       whatsappLink: '',
       whatsappNumber: '',
