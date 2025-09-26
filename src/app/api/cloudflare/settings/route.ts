@@ -55,9 +55,9 @@ export async function GET() {
         backgroundImage: settings.background_image,
         backgroundOpacity: settings.background_opacity || 20,
         backgroundBlur: settings.background_blur || 5,
-        shopTitle: settings.shop_name || 'LeLoup99',
-        shopName: settings.shop_name || 'LeLoup99',
-        shopDescription: settings.shop_description || '',
+        shopTitle: 'LeLoup99', // Valeur par défaut car shop_name n'existe pas
+        shopName: 'LeLoup99', // Valeur par défaut car shop_name n'existe pas
+        shopDescription: '', // Pas de colonne correspondante
         contactInfo: settings.contact_info || '',
         // Ces champs n'existent pas dans le schéma actuel
         whatsappLink: '',
@@ -129,17 +129,21 @@ export async function PUT(request: NextRequest) {
     const testResult = await executeSqlOnD1('SELECT 1 as test');
     console.log('✅ Connexion D1 OK:', JSON.stringify(testResult, null, 2));
     
+    // D'abord, vérifier la structure de la table
+    console.log('🔍 Vérification structure table...');
+    const tableInfo = await executeSqlOnD1("PRAGMA table_info(settings)");
+    console.log('📊 Structure table:', JSON.stringify(tableInfo, null, 2));
+    
     // Vérifier si l'enregistrement existe
     console.log('🔍 Vérification existence enregistrement...');
     const checkResult = await executeSqlOnD1('SELECT id FROM settings WHERE id = 1');
     console.log('📊 Résultat check:', JSON.stringify(checkResult, null, 2));
     
     if (checkResult.result?.[0]?.results?.length) {
-      // UPDATE
+      // UPDATE - Utiliser seulement les colonnes qui existent
       console.log('📝 Mise à jour enregistrement existant...');
       const updateResult = await executeSqlOnD1(`
         UPDATE settings SET 
-          shop_name = ?,
           background_image = ?,
           background_opacity = ?,
           background_blur = ?,
@@ -147,7 +151,6 @@ export async function PUT(request: NextRequest) {
           theme_color = ?
         WHERE id = 1
       `, [
-        shop_name,
         background_image,
         background_opacity,
         background_blur,
@@ -156,16 +159,15 @@ export async function PUT(request: NextRequest) {
       ]);
       console.log('✅ Update result:', JSON.stringify(updateResult, null, 2));
     } else {
-      // INSERT
+      // INSERT - Utiliser seulement les colonnes qui existent
       console.log('📝 Création nouvel enregistrement...');
       const insertResult = await executeSqlOnD1(`
         INSERT INTO settings (
-          id, shop_name, background_image, background_opacity, 
+          id, background_image, background_opacity, 
           background_blur, contact_info, theme_color
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?)
       `, [
         1,
-        shop_name,
         background_image,
         background_opacity,
         background_blur,
@@ -192,9 +194,9 @@ export async function PUT(request: NextRequest) {
       backgroundImage: settings.background_image,
       backgroundOpacity: settings.background_opacity,
       backgroundBlur: settings.background_blur,
-      shopTitle: settings.shop_name || 'LeLoup99',
-      shopName: settings.shop_name || 'LeLoup99',
-      shopDescription: settings.shop_description || '',
+      shopTitle: 'LeLoup99', // Valeur par défaut car shop_name n'existe pas
+      shopName: 'LeLoup99', // Valeur par défaut car shop_name n'existe pas
+      shopDescription: '', // Pas de colonne correspondante
       contactInfo: settings.contact_info || '',
       whatsappLink: '',
       whatsappNumber: '',
