@@ -1,15 +1,28 @@
-# Ignorer les branches de Cursor
-cursor/*
-**/cursor-*
-
-# Fichiers de développement
-.env.local
-.env.development
-
-# Logs
-logs
+# Ignore development files
 *.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Dossiers temporaires
-tmp/
-temp/
+# Ignore documentation
+*.md
+!README.md
+
+# Ignore scripts
+*.sh
+*.js
+!next.config.js
+!postcss.config.js
+
+# Ignore database files
+database/
+*.sql
+
+# Ignore migration files
+migrate-*.js
+init-*.js
+explore-*.js
+copy-*.js
+download-*.js
+replace-*.js
